@@ -84,14 +84,13 @@ function App() {
 
   const matchHasWinner = (matchId) => selectedWinners.some(winner => winner?.matchId && winner.matchId === matchId)
 
-  const findWinningTeam = (matchId) => selectedWinners.find(winner => winner.matchId === matchId).winningTeam
+  const findWinningTeam = (matchId) => selectedWinners.find(winner => winner?.matchId === matchId).winningTeam
 
   const drawWinners = (winners) => {
     const competitors = winners.map(({ winningTeam }) => winningTeam);
-    console.log(competitors);
-    const draw = new Draw(competitors)
-    setDraw(draw);
-    setSelectedWinners([])
+      const draw = new Draw(competitors)
+      setDraw(draw);
+      setSelectedWinners([])
     // @TODO handle final
   }
 
@@ -137,7 +136,7 @@ function App() {
                 <button className="team-btn" disabled={matchHasWinner(match.matchId)}  onClick={() => selectWinner(match.matchId, match.team2)}>
                   {match.team2}
                 </button>
-                {matchHasWinner(match.matchId) && <p>Winner: {findWinningTeam(match.matchId).name}</p>}
+                {matchHasWinner(match.matchId) && <p>Winner: {findWinningTeam(match.matchId)?.name}</p>}
               </div>
             
           )}

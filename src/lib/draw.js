@@ -1,17 +1,36 @@
 export default class Draw {
   constructor(competitors) {
-    console.log(competitors)
-    this.matchboard = [];
-    this.teams = [...competitors]
-    this.teamsLeft = [...competitors.map(competitor => competitor.name)]
-    this.drawInProgress = false;
-    this.matchAmount = competitors.length / 2;
-    this.tournamentProgress = []
-    if(!competitors || this.matchAmount % 2 !== 0) {
-      throw new Error('Amount of competitors and amount of matches has to be even')
+    console.log()
+    if(competitors.length !== 2) {
+      this.matchboard = [];
+      this.teams = [...competitors]
+      this.teamsLeft = [...competitors.map(competitor => competitor.name)]
+      this.drawInProgress = false;
+      this.matchAmount = competitors.length / 2;
+      // this.tournamentProgress = []
+      if(!competitors || this.matchAmount % 2 !== 0) {
+        throw new Error('Amount of competitors and amount of matches has to be even')
+      }
+      this.startDraw()
+    } else {
+      this.setFinal(competitors)
     }
     
-    this.startDraw();
+  }
+
+  setFinal(competitors) {
+    const team1 = competitors[0].name
+    const team2 = competitors[1].name
+    this.teams = [...competitors]
+    this.matchAmount = 1;
+    this.round = this.getMatchRoundName(this.matchAmount)
+    this.matchboard = [{
+      matchId: 'final',
+      title: `${team1} vs ${team2}`,
+      team1,
+      team2
+    }]
+    this.drawInProgress = false
   }
 
   getTeamByName(name) {
