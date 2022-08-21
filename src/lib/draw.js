@@ -1,12 +1,13 @@
 export default class Draw {
-  constructor(competitors, teams) {
+  constructor(competitors) {
+    console.log(competitors)
     this.matchboard = [];
     this.teams = [...competitors]
     this.teamsLeft = [...competitors.map(competitor => competitor.name)]
     this.drawInProgress = false;
     this.matchAmount = competitors.length / 2;
     this.tournamentProgress = []
-    if(this.matchAmount % 2 !== 0) {
+    if(!competitors || this.matchAmount % 2 !== 0) {
       throw new Error('Amount of competitors and amount of matches has to be even')
     }
     

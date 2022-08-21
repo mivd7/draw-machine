@@ -52,6 +52,7 @@ function App() {
     e.preventDefault();
     const isValid = validateForm()
     if(isValid) {
+      console.log("TEAMS", teams)
       const draw = new Draw(teams)
       console.log(draw)
       setDraw(draw)
@@ -85,7 +86,19 @@ function App() {
 
   const findWinningTeam = (matchId) => selectedWinners.find(winner => winner.matchId === matchId).winningTeam
 
-  const goToNextRound = () => console.log('lessa go')
+  const drawWinners = (winners) => {
+    const competitors = winners.map(({ winningTeam }) => winningTeam);
+    console.log(competitors);
+    const draw = new Draw(competitors)
+    setDraw(draw);
+    setSelectedWinners([])
+    // @TODO handle final
+  }
+
+  const goToNextRound = () => {
+    console.log('to next round')
+  }
+  
   return (
     <div className="app container flex-col">
       <h1>Matchboard</h1>
@@ -129,7 +142,11 @@ function App() {
             
           )}
           <button onClick={() => setDrawCompleted(false)}>Edit draw</button>
-          {draw.matchAmount === selectedWinners.length && <button onClick={goToNextRound}>Next Round</button>}
+          {draw.matchAmount === selectedWinners.length && 
+          <div>
+            <button onClick={() => goToNextRound(selectedWinners)}>Next Round</button>
+            <button onClick={() => drawWinners(selectedWinners)}>Draw winners again</button>
+          </div>}
         </div>}
     </div>
   );
