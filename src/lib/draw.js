@@ -18,20 +18,20 @@ export default class Draw {
 
     switch (matchAmount) {
       case 8: 
-        return 'achtste finale'
+        return 'Eigth Finals'
       case 4:
-        return 'kwartfinale'
+        return 'Quarter Finals'
       case 2:
-        return 'halve finale'
+        return 'Semi Finals'
       case 1:
-        return 'finale'
+        return 'Finals'
       default:
         break;
     }
   }
 
   startDraw() {
-    this.matchRound = this.getMatchRoundName(this.matchAmount)
+    this.round = this.getMatchRoundName(this.matchAmount)
     this.drawInProgress = true;
     this.matchId = 1;
     while (this.drawInProgress) {
@@ -41,8 +41,8 @@ export default class Draw {
 
   drawTeams() {
     const copyTeamsLeft = [...this.teamsLeft]
-    
     const { team1, team2 } = this.getMatchup(copyTeamsLeft)
+
     this.teamsLeft = copyTeamsLeft.filter(team => team !== team1 && team !== team2)
     this.matchboard = [...this.matchboard, {
       matchId: this.matchId,
@@ -50,11 +50,11 @@ export default class Draw {
       team1,
       team2
     }]
-
     this.matchId++
 
     if (this.matchboard.length === this.matchAmount) {
       delete this.teamsLeft;
+      delete this.matchId;
       this.drawInProgress = false;
     }
   }

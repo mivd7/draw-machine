@@ -20,8 +20,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const competitors = teams.map(team => team.name)
-    const draw = new Draw(competitors)
+    const draw = new Draw(teams.map(team => team.name))
     setDraw(draw)
     setDrawCompleted(true)
   }
@@ -29,20 +28,24 @@ function App() {
   return (
     <div className="app container flex-col">
       <h1>Matchboard</h1>
-      {!drawCompleted && <form onSubmit={handleSubmit} className="form-container flex flex-col">
-        <p>To start submit the teams you want to draw</p>
-        {teams.map((team, i) => 
-            <div className="team-field" key={`team-${i}`}>
-              <input type="text" defaultValue={team.name} onChange={(e) => handleTeamFieldChange(e, i)}/>
-            </div>
+      {!drawCompleted && 
+        <form onSubmit={handleSubmit} className="form-container flex flex-col">
+          <p>To start submit the teams you want to draw</p>
+          {teams.map((team, i) => 
+              <div className="team-field" key={team.id}>
+                <input type="text" defaultValue={team.name} onChange={(e) => handleTeamFieldChange(e, i)}/>
+              </div>
+            )}
+          <button type="submit">Submit</button>
+        </form>}
+        
+      {drawCompleted && 
+        <div className="draw-container">
+          <h2>{draw.round}</h2>
+          {draw.matchboard.map(match => 
+            <p key={match.matchId}>{match.title}</p>
           )}
-        <button type="submit">Submit</button>
-      </form>}
-      {draw !== null && 
-        <div class="draw-container">
-          <h2>{draw.matchRound} wedstrijden</h2>
-          {draw.matchboard.map(match => <p>{match.title}</p>)}
-          <button onClick={() => setDrawCompleted(false)}>Reset draw</button>
+          <button onClick={() => setDrawCompleted(false)}>Edit draw</button>
         </div>
         }
       
