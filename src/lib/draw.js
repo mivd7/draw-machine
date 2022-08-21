@@ -1,9 +1,11 @@
 export default class Draw {
-  constructor(competitors) {
+  constructor(competitors, teams) {
     this.matchboard = [];
-    this.teamsLeft = [...competitors]
+    this.teams = [...competitors]
+    this.teamsLeft = [...competitors.map(competitor => competitor.name)]
     this.drawInProgress = false;
     this.matchAmount = competitors.length / 2;
+    this.tournamentProgress = []
     if(this.matchAmount % 2 !== 0) {
       throw new Error('Amount of competitors and amount of matches has to be even')
     }
@@ -11,6 +13,12 @@ export default class Draw {
     this.startDraw();
   }
 
+  getTeamByName(name) {
+    return this.teams.find(team => team.name === name)
+  }
+  savePreviousRound (previousRound) {
+    this.tournamentProgress = [...this.tournamentProgress, previousRound]
+  }
   getMatchRoundName(matchAmount) {
     if(matchAmount > 8) {
        return `1 / ${matchAmount} finale`
@@ -53,6 +61,7 @@ export default class Draw {
     this.matchId++
 
     if (this.matchboard.length === this.matchAmount) {
+      console.log(this.matchboard)
       delete this.teamsLeft;
       delete this.matchId;
       this.drawInProgress = false;
