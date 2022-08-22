@@ -1,6 +1,5 @@
 export default class Draw {
   constructor(competitors) {
-    console.log()
     if(competitors.length !== 2) {
       this.matchboard = [];
       this.teams = [...competitors]
@@ -24,6 +23,7 @@ export default class Draw {
     this.teams = [...competitors]
     this.matchAmount = 1;
     this.round = this.getMatchRoundName(this.matchAmount)
+    this.totalRoundsLeft = this.getRoundAmount(this.matchAmount);
     this.matchboard = [{
       matchId: 'final',
       title: `${team1} vs ${team2}`,
@@ -39,6 +39,27 @@ export default class Draw {
   savePreviousRound (previousRound) {
     this.tournamentProgress = [...this.tournamentProgress, previousRound]
   }
+  getRoundAmount (matchAmount, rounds = [], index = 0) {
+    if(typeof matchAmount !== 'number') {
+      throw new Error('invalid input: matchAmount has to be number')
+    }
+  
+    const copyRounds = [...rounds];
+    const roundAmount = copyRounds.length;
+    if(matchAmount === 1) {
+      // case final round matchAmount same as roundAmount
+      return matchAmount
+    }
+  
+    if (copyRounds[index - 1] === matchAmount) {
+      return roundAmount;
+    }
+    const roundTeamAmount = index === 0 ? index + 1 : rounds[index - 1] * 2
+    copyRounds.push(roundTeamAmount);
+  
+    return this.getRoundAmount(matchAmount, copyRounds, index + 1)
+  };
+
   getMatchRoundName(matchAmount) {
     if(matchAmount > 8) {
        return `1 / ${matchAmount} finale`
@@ -59,7 +80,8 @@ export default class Draw {
   }
 
   startDraw() {
-    this.round = this.getMatchRoundName(this.matchAmount)
+    this.round = this.getMatchRoundName(this.matchAmount);
+    this.totalRoundsLeft = this.getRoundAmount(this.matchAmount);
     this.drawInProgress = true;
     this.matchId = 1;
     while (this.drawInProgress) {

@@ -6,6 +6,7 @@ import teamFields from './lib/teamFields'
 function App() {
   const [teams, setTeams] = useState(teamFields);
   const [teamAmount, setTeamAmount] = useState(teamFields.length);
+  const [totalRoundAmount, setTotalRoundAmount] = useState(0);
   const [draw, setDraw] = useState(null)
   const [drawCompleted, setDrawCompleted] = useState(false)
   const [errorMsg, setErrorMsg] = useState('');
@@ -52,10 +53,9 @@ function App() {
     e.preventDefault();
     const isValid = validateForm()
     if(isValid) {
-      console.log("TEAMS", teams)
       const draw = new Draw(teams)
-      console.log(draw)
       setDraw(draw)
+      setTotalRoundAmount(draw.totalRoundsLeft)
       setDrawCompleted(true)
     } else {
       setDrawCompleted(false)
@@ -90,8 +90,8 @@ function App() {
     const competitors = winners.map(({ winningTeam }) => winningTeam);
       const draw = new Draw(competitors)
       setDraw(draw);
+      setTotalRoundAmount(draw.totalRoundsLeft)
       setSelectedWinners([])
-    // @TODO handle final
   }
 
   const goToNextRound = () => {
@@ -101,6 +101,7 @@ function App() {
   return (
     <div className="app container flex-col">
       <h1>Matchboard</h1>
+      {drawCompleted && <h3>Total rounds: {totalRoundAmount}</h3>}
       {!drawCompleted && 
         <form onSubmit={handleSubmit} className="form-container flex flex-col">
           <div>
@@ -111,12 +112,12 @@ function App() {
               style={{marginBottom: '8px'}} 
               onChange={handleTeamAmountChange}
             >
-              {teamAmountOptions.map(option => <option value={option}>{option}</option>)}
+              {teamAmountOptions.map((option,index) => <option key={'option'+index} value={option}>{option}</option>)}
             </select>
           </div>
           
           {teams.map((team, i) => 
-              <div className="team-field" key={team.id}>
+              <div className="team-field" key={`team-${team.id}`}>
                <label>{i + 1}</label> <input type="text" defaultValue={team.name} onChange={(e) => handleTeamFieldChange(e, i)}/>
               </div>
             )}
@@ -129,7 +130,7 @@ function App() {
           <h2>{draw.round}</h2>
           {draw.matchboard.map(match => 
 
-              <div key={match.matchId} class="flex">
+              <div key={`match-${match.matchId}`} className="flex">
                 <button className="team-btn" disabled={matchHasWinner(match.matchId)} onClick={() => selectWinner(match.matchId, match.team1)}>
                   {match.team1}
                 </button>
