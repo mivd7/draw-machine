@@ -38,16 +38,12 @@ function App() {
       ]
     }
     const roundFinished = tournament[currentRoundKey]?.matchAmount === newSelectedWinners[currentRoundKey].length
-
     setSelectedWinners(newSelectedWinners)
     addTeamToNextRound(winningTeam.name)
     if(roundFinished) {
       const nextRoundIndex = currentRoundIndex + 1;
+      newSelectedWinners['round'+nextRoundIndex] = []
       setCurrentRoundIndex(nextRoundIndex)
-      setSelectedWinners({
-        ...selectedWinners,
-        ['round'+nextRoundIndex]: []
-      });
     }
   }
 
