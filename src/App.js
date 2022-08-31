@@ -8,7 +8,9 @@ function App() {
   const [totalRoundAmount, setTotalRoundAmount] = useState(0);
   const [draw, setDraw] = useState(null)
   const [drawCompleted, setDrawCompleted] = useState(false)
-  const [selectedWinners, setSelectedWinners] = useState([])
+  const [selectedWinners, setSelectedWinners] = useState({
+    round0: []
+  })
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0)
   const [tournament, setTournament] = useState(null);
 
@@ -23,17 +25,29 @@ function App() {
 
   const selectWinner = (matchId, winner) => {
     const winningTeam = draw.getTeamByName(winner);
-    const newSelectedWinners = [...selectedWinners, {
-      matchId, 
-      winningTeam
-    }]
-    const roundFinished = tournament['round'+currentRoundIndex]?.matchAmount === newSelectedWinners.length
-    console.log('roundfinished after ' + matchId + '?', roundFinished)
+    const currentRoundKey = 'round'+currentRoundIndex
+    console.log('currentRoundKey on selectWinner', currentRoundKey);
+    const newSelectedWinners = {
+      ...selectedWinners,
+      [currentRoundKey]: [
+        ...selectedWinners[currentRoundKey],
+        {
+          matchId,
+          winningTeam
+        }
+      ]
+    }
+    const roundFinished = tournament[currentRoundKey]?.matchAmount === newSelectedWinners[currentRoundKey].length
+
     setSelectedWinners(newSelectedWinners)
     addTeamToNextRound(winningTeam.name)
     if(roundFinished) {
-      setCurrentRoundIndex(currentRoundIndex + 1)
-      setSelectedWinners([]);
+      const nextRoundIndex = currentRoundIndex + 1;
+      setCurrentRoundIndex(nextRoundIndex)
+      setSelectedWinners({
+        ...selectedWinners,
+        ['round'+nextRoundIndex]: []
+      });
     }
   }
 
@@ -61,7 +75,7 @@ function App() {
   //   setDraw(draw);
   //   setTournament(draw.generateTournament())
   //   setTotalRoundAmount(draw.totalRoundsLeft)
-  //   setSelectedWinners([])
+  //   setSelectedWinners({})
   //   setCurrentRoundIndex(0);
   // }
 
@@ -78,7 +92,7 @@ function App() {
               <button onClick={() => setDrawCompleted(false)}>Edit draw</button>
               <button onClick={() => {
                 setCurrentRoundIndex(currentRoundIndex + 1)
-                setSelectedWinners([]);
+                setSelectedWinners({});
               }}>
                 Next Round
               </button> 
