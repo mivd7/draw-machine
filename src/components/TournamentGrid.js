@@ -1,7 +1,7 @@
-const TournamentGrid = ({selectedWinners, tournament, currentRoundIndex, selectWinner}) => {
+const TournamentGrid = ({selectedWinners, tournament, selectWinner}) => {
     const matchHasWinner = (matchId, roundKey) => selectedWinners[roundKey]?.some(winner => winner?.matchId && winner.matchId === matchId)
     const findWinningTeam = (matchId, roundKey) => selectedWinners[roundKey]?.find(winner => winner?.matchId === matchId).winningTeam
-    
+    console.log('selected winners prop', selectedWinners)
     return(
         <div className="draw-container">
           {tournament && Object.keys(tournament).map(roundKey => 

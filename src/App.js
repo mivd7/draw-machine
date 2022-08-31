@@ -26,7 +26,6 @@ function App() {
   const selectWinner = (matchId, winner) => {
     const winningTeam = draw.getTeamByName(winner);
     const currentRoundKey = 'round'+currentRoundIndex
-    console.log('currentRoundKey on selectWinner', currentRoundKey);
     const newSelectedWinners = {
       ...selectedWinners,
       [currentRoundKey]: [
@@ -37,6 +36,7 @@ function App() {
         }
       ]
     }
+
     const roundFinished = tournament[currentRoundKey]?.matchAmount === newSelectedWinners[currentRoundKey].length
     setSelectedWinners(newSelectedWinners)
     addTeamToNextRound(winningTeam.name)
@@ -53,7 +53,6 @@ function App() {
     const nextRound = copyTournament['round' + nextRoundIndex];
     if(nextRound) {
       const matchSlotIndex = nextRound.matchboard.findIndex(match => match.team1 === null || match.team2 === null);
-      console.log('nextROund', nextRound)
       if(!nextRound.matchboard[matchSlotIndex].team1 && !nextRound.matchboard[matchSlotIndex].team2) {
         nextRound.matchboard[matchSlotIndex].team1 = teamName
       } else if (nextRound.matchboard[matchSlotIndex].team1 && !nextRound.matchboard[matchSlotIndex].team2) {
@@ -82,18 +81,7 @@ function App() {
       {!drawCompleted && <TournamentForm onSubmit={submitForm} onError={() => setDrawCompleted(false)}/>}
 
       {drawCompleted && <>
-        <TournamentGrid selectedWinners={selectedWinners} tournament={tournament} currentRoundIndex={currentRoundIndex} selectWinner={selectWinner}/> 
-        {/* {tournament['round'+currentRoundIndex]?.matchAmount === selectedWinners.length && 
-            <div className="flex">
-              <button onClick={() => setDrawCompleted(false)}>Edit draw</button>
-              <button onClick={() => {
-                setCurrentRoundIndex(currentRoundIndex + 1)
-                setSelectedWinners({});
-              }}>
-                Next Round
-              </button> 
-              <button onClick={() => drawWinners(selectedWinners)}>Draw winners again</button>
-            </div>} */}
+        <TournamentGrid selectedWinners={selectedWinners} tournament={tournament} selectWinner={selectWinner}/> 
         </>}
     </div>
   );
