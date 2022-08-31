@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export default class Draw {
   constructor(competitors) {
     if(competitors.length !== 2) {
@@ -25,7 +27,7 @@ export default class Draw {
     this.round = this.getMatchRoundName(this.matchAmount)
     this.totalRoundsLeft = this.getRoundAmount(this.matchAmount);
     this.matchboard = [{
-      matchId: 'final',
+      matchId: uuidv4(),
       title: `${team1} vs ${team2}`,
       team1,
       team2
@@ -36,9 +38,11 @@ export default class Draw {
   getTeamByName(name) {
     return this.teams.find(team => team.name === name)
   }
+
   savePreviousRound (previousRound) {
     this.tournamentProgress = [...this.tournamentProgress, previousRound]
   }
+
   getRoundAmount (matchAmount, rounds = [], index = 0) {
     if(typeof matchAmount !== 'number') {
       throw new Error('invalid input: matchAmount has to be number')
@@ -95,7 +99,7 @@ export default class Draw {
 
     this.teamsLeft = copyTeamsLeft.filter(team => team !== team1 && team !== team2)
     this.matchboard = [...this.matchboard, {
-      matchId: this.matchId,
+      matchId: uuidv4(),
       title: `${team1} vs. ${team2}`, 
       team1,
       team2
@@ -103,7 +107,6 @@ export default class Draw {
     this.matchId++
 
     if (this.matchboard.length === this.matchAmount) {
-      console.log(this.matchboard)
       delete this.teamsLeft;
       delete this.matchId;
       this.drawInProgress = false;
@@ -126,5 +129,25 @@ export default class Draw {
       return result
     }
     return this.randomIntFromInterval(min, max, blacklistedInt)
+  }
+
+  generateTournament () {
+    const rounds = {
+      round0: this.matchboard
+    }
+
+    for(let i = 1; i < this.totalRoundsLeft; i++) {
+      rounds['round'+i] = this.addMatches(i)
+    }
+
+    this.tournament = rounds;
+    return rounds;
+  }
+
+  addMatches(roundIndex) {
+    const roundMatchboard = []
+    if(roundIndex <= this.totalRoundsLeft) {
+      
+    }
   }
 }

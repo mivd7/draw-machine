@@ -2,12 +2,14 @@ import { useState } from 'react';
 import './App.css';
 import Draw from './lib/draw';
 import teamFields from './lib/teamFields'
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
   const [teams, setTeams] = useState(teamFields);
   const [teamAmount, setTeamAmount] = useState(teamFields.length);
   const [totalRoundAmount, setTotalRoundAmount] = useState(0);
   const [draw, setDraw] = useState(null)
+  const [matchboard, setMatchboard] = useState(null);
   const [drawCompleted, setDrawCompleted] = useState(false)
   const [errorMsg, setErrorMsg] = useState('');
   const [selectedWinners, setSelectedWinners] = useState([])
@@ -33,7 +35,7 @@ function App() {
       const newTeamFields = [];
       for (let i = 0; i < newTeamAmount; i++) {
         newTeamFields.push({
-          id: i + teams.length,
+          id: uuidv4(),
           name: ''
         })
       }
@@ -54,13 +56,16 @@ function App() {
     const isValid = validateForm()
     if(isValid) {
       const draw = new Draw(teams)
+      console.log('generateTournament', draw.generateTournament())
       setDraw(draw)
+      setMatchboard(draw.matchboard)
       setTotalRoundAmount(draw.totalRoundsLeft)
       setDrawCompleted(true)
     } else {
       setDrawCompleted(false)
     }
   }
+
   const validateForm = () => {
     if(teams.some(team => team.name === '')) {
       setErrorMsg('Not enough teams to start draw')
@@ -88,16 +93,25 @@ function App() {
 
   const drawWinners = (winners) => {
     const competitors = winners.map(({ winningTeam }) => winningTeam);
-      const draw = new Draw(competitors)
-      setDraw(draw);
-      setTotalRoundAmount(draw.totalRoundsLeft)
-      setSelectedWinners([])
+    const draw = new Draw(competitors)
+    setDraw(draw);
+    setMatchboard(draw.matchboard)
+    setTotalRoundAmount(draw.totalRoundsLeft)
+    setSelectedWinners([])
   }
 
-  const goToNextRound = () => {
-    console.log('to next round')
+  const goToNextRound = (winners) => {
+    const nextRoundMatches = []
+
+    winners.forEach((winner, i) => {
+      const newMatchId = matchboard.length + (i + 1);
+      if(nextRoundMatches.length < (matchboard.length / 2)) {
+        nextRoundMatches.push({matchId: newMatchId, team1: winner.winningTeam.name, team2: winners[i + 1].winningTeam.name})
+      }
+    })
+    setMatchboard(nextRoundMatches);
   }
-  
+
   return (
     <div className="app container flex-col">
       <h1>Matchboard</h1>
@@ -128,7 +142,7 @@ function App() {
       {drawCompleted && 
         <div className="draw-container">
           <h2>{draw.round}</h2>
-          {draw.matchboard.map(match => 
+          {matchboard && matchboard.map(match => 
 
               <div key={`match-${match.matchId}`} className="flex">
                 <button className="team-btn" disabled={matchHasWinner(match.matchId)} onClick={() => selectWinner(match.matchId, match.team1)}>
