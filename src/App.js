@@ -4,16 +4,19 @@ import Draw from './lib/draw';
 import teamFields from './lib/teamFields'
 import { v4 as uuidv4 } from 'uuid';
 
+const teamAmountOptions = [4, 8, 16, 32, 64];
+
 function App() {
   const [teams, setTeams] = useState(teamFields);
   const [teamAmount, setTeamAmount] = useState(teamFields.length);
   const [totalRoundAmount, setTotalRoundAmount] = useState(0);
   const [draw, setDraw] = useState(null)
-  const [matchboard, setMatchboard] = useState(null);
+  // const [matchboard, setMatchboard] = useState(null);
   const [drawCompleted, setDrawCompleted] = useState(false)
   const [errorMsg, setErrorMsg] = useState('');
   const [selectedWinners, setSelectedWinners] = useState([])
-  const teamAmountOptions = [4, 8, 16, 32, 64];
+  const [currentRoundIndex, setCurrentRoundIndex] = useState(0)
+  const [tournament, setTournament] = useState(null);
 
   function hasDuplicates(array) {
     return (new Set(array)).size !== array.length;
@@ -56,9 +59,10 @@ function App() {
     const isValid = validateForm()
     if(isValid) {
       const draw = new Draw(teams)
-      console.log('generateTournament', draw.generateTournament())
+      console.log('generateTournament', )
       setDraw(draw)
-      setMatchboard(draw.matchboard)
+      setTournament(draw.generateTournament());
+      // setMatchboard(draw.matchboard)
       setTotalRoundAmount(draw.totalRoundsLeft)
       setDrawCompleted(true)
     } else {
@@ -85,32 +89,39 @@ function App() {
       matchId, 
       winningTeam
     }])
+    addTeamToNextRound(winningTeam.name)
   }
 
+  const addTeamToNextRound = (teamName) => {
+    const copyTournament = {...tournament}
+    const nextRoundIndex = currentRoundIndex + 1;
+    const nextRound = copyTournament['round' + nextRoundIndex];
+    if(nextRound) {
+      const matchSlotIndex = nextRound.matchboard.findIndex(match => match.team1 === null || match.team2 === null);
+      
+      if(!nextRound.matchboard[matchSlotIndex].team1 && !nextRound.matchboard[matchSlotIndex].team2) {
+        nextRound.matchboard[matchSlotIndex].team1 = teamName
+      } else if (nextRound.matchboard[matchSlotIndex].team1 && !nextRound.matchboard[matchSlotIndex].team2) {
+        nextRound.matchboard[matchSlotIndex].team2 = teamName
+      }
+      
+      setTournament(copyTournament)
+    }
+    // handle final
+  }
+  
   const matchHasWinner = (matchId) => selectedWinners.some(winner => winner?.matchId && winner.matchId === matchId)
 
   const findWinningTeam = (matchId) => selectedWinners.find(winner => winner?.matchId === matchId).winningTeam
 
-  const drawWinners = (winners) => {
-    const competitors = winners.map(({ winningTeam }) => winningTeam);
-    const draw = new Draw(competitors)
-    setDraw(draw);
-    setMatchboard(draw.matchboard)
-    setTotalRoundAmount(draw.totalRoundsLeft)
-    setSelectedWinners([])
-  }
-
-  const goToNextRound = (winners) => {
-    const nextRoundMatches = []
-
-    winners.forEach((winner, i) => {
-      const newMatchId = matchboard.length + (i + 1);
-      if(nextRoundMatches.length < (matchboard.length / 2)) {
-        nextRoundMatches.push({matchId: newMatchId, team1: winner.winningTeam.name, team2: winners[i + 1].winningTeam.name})
-      }
-    })
-    setMatchboard(nextRoundMatches);
-  }
+  // const drawWinners = (winners) => {
+  //   const competitors = winners.map(({ winningTeam }) => winningTeam);
+  //   const draw = new Draw(competitors)
+  //   setDraw(draw);
+  //   setTotalRoundAmount(draw.totalRoundsLeft)
+  //   setSelectedWinners([])
+  // }
+  
 
   return (
     <div className="app container flex-col">
@@ -142,7 +153,7 @@ function App() {
       {drawCompleted && 
         <div className="draw-container">
           <h2>{draw.round}</h2>
-          {matchboard && matchboard.map(match => 
+          {tournament['round'+currentRoundIndex]?.matchboard && tournament['round'+currentRoundIndex]?.matchboard.map(match => 
 
               <div key={`match-${match.matchId}`} className="flex">
                 <button className="team-btn" disabled={matchHasWinner(match.matchId)} onClick={() => selectWinner(match.matchId, match.team1)}>
@@ -156,11 +167,14 @@ function App() {
             
           )}
           <button onClick={() => setDrawCompleted(false)}>Edit draw</button>
-          {draw.matchAmount === selectedWinners.length && 
-          <div>
-            <button onClick={() => goToNextRound(selectedWinners)}>Next Round</button>
-            <button onClick={() => drawWinners(selectedWinners)}>Draw winners again</button>
-          </div>}
+          {tournament['round'+currentRoundIndex]?.matchAmount === selectedWinners.length && 
+            <div>
+              <button onClick={() => {
+                setCurrentRoundIndex(currentRoundIndex + 1)
+                setSelectedWinners([]);
+              }}>Next Round</button>
+              {/* <button onClick={() => drawWinners(selectedWinners)}>Draw winners again</button> */}
+            </div>}
         </div>}
     </div>
   );

@@ -132,22 +132,28 @@ export default class Draw {
   }
 
   generateTournament () {
-    const rounds = {
-      round0: this.matchboard
-    }
-
-    for(let i = 1; i < this.totalRoundsLeft; i++) {
-      rounds['round'+i] = this.addMatches(i)
+    const {matchAmount, matchboard} = this;
+    const rounds = {};
+    for(let i = 0; i < this.totalRoundsLeft; i++) {
+      const currentRoundMatchAmount = i === 0 ? matchAmount : rounds['round' + (i - 1)].matchAmount / 2
+      rounds['round' + i] = {roundId: uuidv4(), matchAmount: currentRoundMatchAmount, matchboard: i === 0 ? matchboard : this.createMatchboard(currentRoundMatchAmount)}
     }
 
     this.tournament = rounds;
     return rounds;
   }
 
-  addMatches(roundIndex) {
-    const roundMatchboard = []
-    if(roundIndex <= this.totalRoundsLeft) {
-      
+  createMatchboard(matchAmount) {
+    const matches = []
+    for(let i = 0; i < matchAmount; i++) {
+      const match = {
+        matchId: uuidv4(),
+        title: '',
+        team1: null,
+        team2: null,
+      }
+      matches.push(match)
     }
+    return matches;
   }
 }
