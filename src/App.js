@@ -11,7 +11,6 @@ function App() {
   const [teamAmount, setTeamAmount] = useState(teamFields.length);
   const [totalRoundAmount, setTotalRoundAmount] = useState(0);
   const [draw, setDraw] = useState(null)
-  // const [matchboard, setMatchboard] = useState(null);
   const [drawCompleted, setDrawCompleted] = useState(false)
   const [errorMsg, setErrorMsg] = useState('');
   const [selectedWinners, setSelectedWinners] = useState([])
@@ -59,10 +58,8 @@ function App() {
     const isValid = validateForm()
     if(isValid) {
       const draw = new Draw(teams)
-      console.log('generateTournament', )
       setDraw(draw)
       setTournament(draw.generateTournament());
-      // setMatchboard(draw.matchboard)
       setTotalRoundAmount(draw.totalRoundsLeft)
       setDrawCompleted(true)
     } else {
@@ -107,20 +104,22 @@ function App() {
       
       setTournament(copyTournament)
     }
-    // handle final
+    // handle tournament end
   }
   
   const matchHasWinner = (matchId) => selectedWinners.some(winner => winner?.matchId && winner.matchId === matchId)
 
   const findWinningTeam = (matchId) => selectedWinners.find(winner => winner?.matchId === matchId).winningTeam
 
-  // const drawWinners = (winners) => {
-  //   const competitors = winners.map(({ winningTeam }) => winningTeam);
-  //   const draw = new Draw(competitors)
-  //   setDraw(draw);
-  //   setTotalRoundAmount(draw.totalRoundsLeft)
-  //   setSelectedWinners([])
-  // }
+  const drawWinners = (winners) => {
+    const competitors = winners.map(({ winningTeam }) => winningTeam);
+    const draw = new Draw(competitors)
+    setDraw(draw);
+    setTournament(draw.generateTournament())
+    setTotalRoundAmount(draw.totalRoundsLeft)
+    setSelectedWinners([])
+    setCurrentRoundIndex(0);
+  }
   
 
   return (
@@ -172,8 +171,10 @@ function App() {
               <button onClick={() => {
                 setCurrentRoundIndex(currentRoundIndex + 1)
                 setSelectedWinners([]);
-              }}>Next Round</button>
-              {/* <button onClick={() => drawWinners(selectedWinners)}>Draw winners again</button> */}
+              }}>
+                Next Round
+              </button>
+              <button onClick={() => drawWinners(selectedWinners)}>Draw winners again</button>
             </div>}
         </div>}
     </div>
