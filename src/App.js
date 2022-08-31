@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './App.css';
-import Tournament from './components/Tournament';
+import TournamentGrid from './components/TournamentGrid';
 import TournamentForm from './components/TournamentForm';
 import Draw from './lib/draw';
 
@@ -23,11 +23,18 @@ function App() {
 
   const selectWinner = (matchId, winner) => {
     const winningTeam = draw.getTeamByName(winner);
-    setSelectedWinners([...selectedWinners, {
+    const newSelectedWinners = [...selectedWinners, {
       matchId, 
       winningTeam
-    }])
+    }]
+    const roundFinished = tournament['round'+currentRoundIndex]?.matchAmount === newSelectedWinners.length
+    console.log('roundfinished after ' + matchId + '?', roundFinished)
+    setSelectedWinners(newSelectedWinners)
     addTeamToNextRound(winningTeam.name)
+    if(roundFinished) {
+      setCurrentRoundIndex(currentRoundIndex + 1)
+      setSelectedWinners([]);
+    }
   }
 
   const addTeamToNextRound = (teamName) => {
@@ -36,7 +43,7 @@ function App() {
     const nextRound = copyTournament['round' + nextRoundIndex];
     if(nextRound) {
       const matchSlotIndex = nextRound.matchboard.findIndex(match => match.team1 === null || match.team2 === null);
-      
+      console.log('nextROund', nextRound)
       if(!nextRound.matchboard[matchSlotIndex].team1 && !nextRound.matchboard[matchSlotIndex].team2) {
         nextRound.matchboard[matchSlotIndex].team1 = teamName
       } else if (nextRound.matchboard[matchSlotIndex].team1 && !nextRound.matchboard[matchSlotIndex].team2) {
@@ -48,16 +55,15 @@ function App() {
     // handle tournament end
   }
 
-  const drawWinners = (winners) => {
-    const competitors = winners.map(({ winningTeam }) => winningTeam);
-    const draw = new Draw(competitors)
-    setDraw(draw);
-    setTournament(draw.generateTournament())
-    setTotalRoundAmount(draw.totalRoundsLeft)
-    setSelectedWinners([])
-    setCurrentRoundIndex(0);
-  }
-  
+  // const drawWinners = (winners) => {
+  //   const competitors = winners.map(({ winningTeam }) => winningTeam);
+  //   const draw = new Draw(competitors)
+  //   setDraw(draw);
+  //   setTournament(draw.generateTournament())
+  //   setTotalRoundAmount(draw.totalRoundsLeft)
+  //   setSelectedWinners([])
+  //   setCurrentRoundIndex(0);
+  // }
 
   return (
     <div className="app container flex-col">
@@ -66,9 +72,9 @@ function App() {
       {!drawCompleted && <TournamentForm onSubmit={submitForm} onError={() => setDrawCompleted(false)}/>}
 
       {drawCompleted && <>
-        <Tournament selectedWinners={selectedWinners} tournament={tournament} currentRoundIndex={currentRoundIndex} selectWinner={selectWinner}/> 
-        {tournament['round'+currentRoundIndex]?.matchAmount === selectedWinners.length && 
-            <div class="flex">
+        <TournamentGrid selectedWinners={selectedWinners} tournament={tournament} currentRoundIndex={currentRoundIndex} selectWinner={selectWinner}/> 
+        {/* {tournament['round'+currentRoundIndex]?.matchAmount === selectedWinners.length && 
+            <div className="flex">
               <button onClick={() => setDrawCompleted(false)}>Edit draw</button>
               <button onClick={() => {
                 setCurrentRoundIndex(currentRoundIndex + 1)
@@ -77,7 +83,7 @@ function App() {
                 Next Round
               </button> 
               <button onClick={() => drawWinners(selectedWinners)}>Draw winners again</button>
-            </div>}
+            </div>} */}
         </>}
     </div>
   );
