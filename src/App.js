@@ -36,7 +36,6 @@ function App() {
         }
       ]
     }
-
     const roundFinished = tournament[currentRoundKey]?.matchAmount === newSelectedWinners[currentRoundKey].length
     setSelectedWinners(newSelectedWinners)
     addTeamToNextRound(winningTeam.name)
@@ -82,7 +81,7 @@ function App() {
 
       {drawCompleted && <>
         <TournamentGrid selectedWinners={selectedWinners} tournament={tournament} selectWinner={selectWinner}/> 
-        </>}
+      </>}
     </div>
   );
 }

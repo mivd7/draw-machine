@@ -8,7 +8,7 @@ export default class Draw {
       this.teamsLeft = [...competitors.map(competitor => competitor.name)]
       this.drawInProgress = false;
       this.matchAmount = competitors.length / 2;
-      // this.tournamentProgress = []
+
       if(!competitors || this.matchAmount % 2 !== 0) {
         throw new Error('Amount of competitors and amount of matches has to be even')
       }
@@ -117,7 +117,7 @@ export default class Draw {
     let firstTeamIndex = this.randomIntFromInterval(0, (teamsLeft.length - 1));
     let secondTeamIndex = this.randomIntFromInterval(0, (teamsLeft.length - 1), firstTeamIndex)
     return {
-      id: `${firstTeamIndex}${secondTeamIndex}`,
+      id: uuidv4(),
       team1: teamsLeft[firstTeamIndex],
       team2: teamsLeft[secondTeamIndex]
     }
@@ -136,7 +136,10 @@ export default class Draw {
     const rounds = {};
     for(let i = 0; i < this.totalRoundsLeft; i++) {
       const currentRoundMatchAmount = i === 0 ? matchAmount : rounds['round' + (i - 1)].matchAmount / 2
-      rounds['round' + i] = {roundId: uuidv4(), matchAmount: currentRoundMatchAmount, matchboard: i === 0 ? matchboard : this.createMatchboard(currentRoundMatchAmount)}
+      rounds['round' + i] = {
+        roundId: uuidv4(), 
+        matchAmount: currentRoundMatchAmount, 
+        matchboard: i === 0 ? matchboard : this.createMatchboard(currentRoundMatchAmount)}
     }
 
     this.tournament = rounds;
