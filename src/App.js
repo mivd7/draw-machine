@@ -23,7 +23,7 @@ function App() {
     setDrawCompleted(true)
   }
 
-  const selectWinner = (matchId, winner) => {
+  const selectWinner = (matchId, winner, col) => {
     const winningTeam = draw.getTeamByName(winner);
     const currentRoundKey = 'round'+currentRoundIndex
     const newSelectedWinners = {
@@ -60,10 +60,10 @@ function App() {
       
       setTournament(copyTournament)
     }
-    // handle tournament end
+    // @TODO handle tournament end
   }
 
-  // const drawWinners = (winners) => {
+  // @TODO const drawWinners = (winners) => {
   //   const competitors = winners.map(({ winningTeam }) => winningTeam);
   //   const draw = new Draw(competitors)
   //   setDraw(draw);
@@ -79,9 +79,7 @@ function App() {
       {drawCompleted && <h3>Total rounds: {totalRoundAmount}</h3>}
       {!drawCompleted && <TournamentForm onSubmit={submitForm} onError={() => setDrawCompleted(false)}/>}
 
-      {drawCompleted && <>
-        <TournamentGrid selectedWinners={selectedWinners} tournament={tournament} selectWinner={selectWinner}/> 
-      </>}
+      {drawCompleted && <TournamentGrid selectedWinners={selectedWinners} tournament={tournament} selectWinner={selectWinner}/>}
     </div>
   );
 }
