@@ -26,7 +26,7 @@ const TournamentGrid = ({selectedWinners, tournament, selectWinner}) => {
     const roundKeys = Object.keys(tournament);
     const dividedItems = useMemo(() => getTournamentGridColumns(Object.keys(tournament), tournament), [tournament])
     const {leftCols, rightCols, middleCol} = dividedItems;
-    console.log('middleCol', middleCol) 
+
     const matchHasWinner = (matchId, roundKey) => selectedWinners[roundKey]?.some(winner => winner?.matchId && winner.matchId === matchId)
 
     return(

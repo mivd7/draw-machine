@@ -3,7 +3,6 @@ export function hasDuplicates(array) {
 }
 
 export function divideMatchboard (arr) {
-    console.log('divde arg', arr)
     if(arr.length > 1) {
         const middleIndex = Math.ceil(arr.length / 2)
         const leftSide = [...arr].splice(0, middleIndex);   
