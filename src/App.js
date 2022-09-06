@@ -26,10 +26,7 @@ function App() {
   }
 
   const selectWinner = (matchId, winner, col) => {
-    const winningTeam = {
-      ...draw.getTeamByName(winner),
-      wonMatchId: matchId
-    };
+    const winningTeam = draw.getTeamByName(winner)
     const currentRoundKey = 'round'+currentRoundIndex
     const newSelectedWinners = {
       ...selectedWinners,
@@ -52,24 +49,21 @@ function App() {
   }
 
   function findNextMatchSlotIndex(nextRoundMatchboard, { leftCols, rightCols }, wonMatchId) {
-    const nextLeftColIndex = leftCols.findIndex(col => col.some(match => match.matchId === wonMatchId)) + 1
     const isFinal = nextRoundMatchboard.length === 1;
     if(isFinal) {
+      // only one match left
       return nextRoundMatchboard.findIndex(match => match.team1 === null || match.team2 === null);
     }
 
+    const nextLeftColIndex = leftCols.findIndex(col => col.some(match => match.matchId === wonMatchId)) + 1
     if(nextLeftColIndex > 0) {
       // winner on left
       const nextMatch = leftCols[nextLeftColIndex].find(match => match.team1 === null || match.team2 === null);
-      console.log('nextMatch', nextMatch)
-      console.log('nextRoundMatchboard', nextRoundMatchboard)
       return nextRoundMatchboard.findIndex(match => match.matchId === nextMatch.matchId)
     }
     
+    // winner on right
     const nextRightColIndex = rightCols.findIndex(col => col.some(match => match.matchId === wonMatchId)) - 1
-    console.log('rightCols', rightCols)
-    console.log('winning match id', wonMatchId)
-    console.log('nextRightColIndex', nextRightColIndex)
     const nextMatch = rightCols[nextRightColIndex].find(match => match.team1 === null || match.team2 === null);
     return nextRoundMatchboard.findIndex(match => match.matchId === nextMatch.matchId)
   }
@@ -107,7 +101,12 @@ function App() {
       {drawCompleted && <h3>Total rounds: {totalRoundAmount}</h3>}
       {!drawCompleted && <TournamentForm onSubmit={submitForm} onError={() => setDrawCompleted(false)}/>}
 
-      {drawCompleted && <TournamentGrid selectedWinners={selectedWinners} tournament={tournament} selectWinner={selectWinner}/>}
+      {drawCompleted && 
+        <TournamentGrid 
+          selectedWinners={selectedWinners} 
+          tournament={tournament} 
+          selectWinner={selectWinner} 
+          dividedItems={matchGrid}/>}
     </div>
   );
 }
