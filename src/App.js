@@ -104,7 +104,7 @@ function App() {
       {drawCompleted && 
         <TournamentGrid 
           selectedWinners={selectedWinners} 
-          tournament={tournament} 
+          roundKeys={Object.keys(tournament ?? {})} 
           selectWinner={selectWinner} 
           dividedItems={matchGrid}/>}
     </div>
