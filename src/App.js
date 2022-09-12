@@ -63,7 +63,7 @@ function App() {
     }
     
     // winner on right
-    const nextRightColIndex = rightCols.findIndex(col => col.some(match => match.matchId === wonMatchId)) - 1
+    const nextRightColIndex = rightCols.findIndex(col => col.some(match => match.matchId === wonMatchId)) + 1
     const nextMatch = rightCols[nextRightColIndex].find(match => match.team1 === null || match.team2 === null);
     return nextRoundMatchboard.findIndex(match => match.matchId === nextMatch.matchId)
   }

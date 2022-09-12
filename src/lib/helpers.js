@@ -2,19 +2,21 @@ export function hasDuplicates(array) {
     return (new Set(array)).size !== array.length;
 }
 
-export function divideMatchboard (arr) {
+export function divideMatchboard (arr, roundKey) {
     if(arr.length > 1) {
         const middleIndex = Math.ceil(arr.length / 2)
         const leftSide = [...arr].splice(0, middleIndex).map(match => {
             return {
                 ...match,
-                gridSide: 'left'
+                gridSide: 'left',
+                round: roundKey
             }
         });
         const rightSide = [...arr].splice(-middleIndex).map(match => {
             return {
                 ...match,
-                gridSide: 'right'
+                gridSide: 'right',
+                round: roundKey
             }
         });;
         return {
@@ -35,13 +37,13 @@ export function getTournamentGridColumns(tournamentKeys, tournament) {
         };
     
         tournamentKeys.forEach(key => {
-            const divided = divideMatchboard(tournament[key].matchboard)
+            const divided = divideMatchboard(tournament[key].matchboard, key)
             if(divided) {
                 result.leftCols.push(divided.leftSide)
                 result.rightCols.push(divided.rightSide)
             }
         })
-        result.rightCols.reverse();
+        // result.rightCols.reverse();
         return result;
     }
     return undefined
