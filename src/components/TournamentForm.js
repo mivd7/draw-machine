@@ -1,3 +1,4 @@
+import { Button, Flex, FormControl, FormLabel, Grid, GridItem, Heading, Input, Select, Text, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { hasDuplicates } from '../lib/helpers';
@@ -63,25 +64,28 @@ const TournamentForm = ({ onSubmit, onError }) => {
     }
 
     return(
-        <form onSubmit={handleSubmit} className="form-container flex flex-col">
-          <div>
-            <p>How many teams will compete in the tournament?</p>
-            <select 
+        <form onSubmit={handleSubmit}>
+          <Flex direction={'column'} mt={8} mb={16}>
+            <Text>How many teams will compete in the tournament?</Text>
+            <Select 
               defaultValue={teamAmount} 
               name="teamAmount" 
               style={{marginBottom: '8px'}} 
               onChange={handleTeamAmountChange}
             > 
               {teamAmountOptions.map((option,index) => <option key={'option'+index} value={option}>{option}</option>)}
-            </select>
-          </div>
-          
-          {teams.map((team, i) => 
-              <div className="team-field" key={`team-${team.id}`}>
-               <label>{i + 1}</label> <input type="text" defaultValue={team.name} onChange={(e) => handleTeamFieldChange(e, i)}/>
-              </div>
+            </Select>
+          </Flex>
+          <Heading as="h3" size="lg">Teams:</Heading>
+          <Grid templateColumns={'1fr 1fr'} columnGap={16} mt={8} mb={16}>
+            {teams.map((team, i) => 
+              <GridItem className="team-field" key={`team-${team.id}`}>
+               <Input type="text" defaultValue={team.name} onChange={(e) => handleTeamFieldChange(e, i)} placeholder="Name..."/>
+              </GridItem>
             )}
-          <button type="submit">Submit</button>
+          </Grid>
+          
+          <Button type="submit" bgColor={'yellow.600'} color={'white'}>Submit</Button>
           {errorMsg !== '' && <p style={{color: 'red'}}>{errorMsg}</p>}
         </form>
     )

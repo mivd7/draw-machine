@@ -4,6 +4,7 @@ import TournamentGrid from './components/TournamentGrid';
 import TournamentForm from './components/TournamentForm';
 import Draw from './lib/draw';
 import { getTournamentGridColumns } from './lib/helpers';
+import { Container, Flex, Heading } from '@chakra-ui/react';
 
 function App() {
   const [totalRoundAmount, setTotalRoundAmount] = useState(0);
@@ -96,18 +97,20 @@ function App() {
   // }
 
   return (
-    <div className="app container flex-col">
-      <h1>Matchboard</h1>
-      {drawCompleted && <h3>Total rounds: {totalRoundAmount}</h3>}
-      {!drawCompleted && <TournamentForm onSubmit={submitForm} onError={() => setDrawCompleted(false)}/>}
+    <Container maxW="container.xl" py={32}>
+      <Flex direction="column">
+        <Heading>Matchboard</Heading>
+        {drawCompleted && <Heading>Total rounds: {totalRoundAmount}</Heading>}
+        {!drawCompleted && <TournamentForm onSubmit={submitForm} onError={() => setDrawCompleted(false)}/>}
 
-      {drawCompleted && 
-        <TournamentGrid 
-          selectedWinners={selectedWinners} 
-          roundKeys={Object.keys(tournament ?? {})} 
-          selectWinner={selectWinner} 
-          dividedItems={matchGrid}/>}
-    </div>
+        {drawCompleted && 
+          <TournamentGrid 
+            selectedWinners={selectedWinners} 
+            roundKeys={Object.keys(tournament ?? {})} 
+            selectWinner={selectWinner} 
+            dividedItems={matchGrid}/>}
+      </Flex>
+    </Container>
   );
 }
 
