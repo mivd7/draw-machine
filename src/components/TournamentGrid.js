@@ -1,27 +1,45 @@
-const TournamentGrid = ({selectedWinners, tournament, selectWinner}) => {
-    const matchHasWinner = (matchId, roundKey) => selectedWinners[roundKey]?.some(winner => winner?.matchId && winner.matchId === matchId)
-    const findWinningTeam = (matchId, roundKey) => selectedWinners[roundKey]?.find(winner => winner?.matchId === matchId).winningTeam
-    console.log('selected winners prop', selectedWinners)
+import TournamentMatchup from './TournamentMatchup';
+
+const TournamentGrid = ({selectedWinners, roundKeys, dividedItems, selectWinner}) => {
+    const {leftCols, rightCols, middleCol} = dividedItems;
+
+    const matchHasWinner = (matchId, roundKey) => {
+      return selectedWinners[roundKey]?.some(winner => winner.matchId === matchId)
+    }
+    
+    function reverseArray (arr) {
+      return [...arr].reverse();
+    }
+
     return(
         <div className="draw-container">
-          {tournament && Object.keys(tournament).map(roundKey => 
-            <div key={tournament[roundKey].roundId}>
-              <strong>{roundKey}</strong>
-              {tournament[roundKey].matchboard.map(match => 
-                <div key={`match-${match.matchId}`} className="flex">
-                  {match.team1 && 
-                    <button className="team-btn" disabled={matchHasWinner(match.matchId, roundKey)} onClick={() => selectWinner(match.matchId, match.team1)}>
-                      {match.team1}
-                    </button>
-                  }
-                  <span style={{margin: '0 8px'}}>vs.</span>
-                  {match.team2 &&
-                    <button className="team-btn" disabled={matchHasWinner(match.matchId, roundKey)}  onClick={() => selectWinner(match.matchId, match.team2)}>
-                      {match.team2}
-                    </button>
-                  }
-                  {matchHasWinner(match.matchId, roundKey) && <p>Winner: {findWinningTeam(match.matchId, roundKey)?.name}</p>}
-                </div>
+          {leftCols && leftCols.map((col, i) => 
+            <div className="grid-col grid-col-left" key={'tournament-left-'+i}>
+              {col.map(match => 
+                <TournamentMatchup 
+                  key={match.matchId} 
+                  match={match} 
+                  selectWinner={selectWinner} 
+                  matchHasWinner={matchHasWinner}/>
+              )}
+            </div>
+          )}
+          <div className="grid-col">
+            {middleCol.map(match => 
+              <TournamentMatchup 
+                key={match.matchId} 
+                match={match} 
+                selectWinner={selectWinner} 
+                matchHasWinner={matchHasWinner} />)}
+          </div>
+          {rightCols && reverseArray(rightCols).map((col, i) => 
+            <div className="grid-col grid-col-right" key={'tournament-right-'+i}>
+              {col.map(match => 
+                <TournamentMatchup 
+                  key={match.matchId} 
+                  match={match} 
+                  selectWinner={selectWinner} 
+                  matchHasWinner={matchHasWinner}/>
               )}
             </div>
           )}
