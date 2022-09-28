@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormLabel, Grid, GridItem, Heading, Input, Select, Text, VStack } from '@chakra-ui/react';
+import { Button, Flex, Grid, GridItem, Heading, Input, Select, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { hasDuplicates } from '../lib/helpers';
@@ -65,7 +65,7 @@ const TournamentForm = ({ onSubmit, onError }) => {
 
     return(
         <form onSubmit={handleSubmit}>
-          <Flex direction={'column'} mt={8} mb={16}>
+          <Flex direction={'column'} mt={[4,8]} mb={[8, 16]}>
             <Text>How many teams will compete in the tournament?</Text>
             <Select 
               defaultValue={teamAmount} 
@@ -77,15 +77,15 @@ const TournamentForm = ({ onSubmit, onError }) => {
             </Select>
           </Flex>
           <Heading as="h3" size="lg">Teams:</Heading>
-          <Grid templateColumns={'1fr 1fr'} columnGap={16} mt={8} mb={16}>
+          <Grid templateColumns={{md: '1fr 1fr', base: '1fr'}} columnGap={16} mt={[4,8]} mb={[8, 16]}>
             {teams.map((team, i) => 
-              <GridItem className="team-field" key={`team-${team.id}`}>
+              <GridItem className="team-field" key={`team-${team.id}`} boxShadow={"white"} bgColor="whiteAlpha.100">
                <Input type="text" defaultValue={team.name} onChange={(e) => handleTeamFieldChange(e, i)} placeholder="Name..."/>
               </GridItem>
             )}
           </Grid>
           
-          <Button type="submit" bgColor={'yellow.600'} color={'white'}>Submit</Button>
+          <Button type="submit" bgColor={'yellow.600'} color={'whiteAlpha.900'}>Submit</Button>
           {errorMsg !== '' && <p style={{color: 'red'}}>{errorMsg}</p>}
         </form>
     )

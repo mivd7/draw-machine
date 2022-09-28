@@ -5,12 +5,12 @@ const theme = extendTheme({
       global: {
         'html, body': {
           backgroundColor: 'gray.900',
-          color:'white',
+          color:'whiteAlpha.900',
           lineHeight: 'tall',
         },
-        a: {
-          color: 'teal.500',
-        },
+      },
+      shadows: {
+        white: '0 0 0 3px white'
       }
     }
 });
