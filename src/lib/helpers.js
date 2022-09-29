@@ -1,5 +1,8 @@
 export function hasDuplicates(array) {
-    return (new Set(array)).size !== array.length;
+    if(array) {
+        return (new Set(array)).size !== array.length;
+    }
+    return undefined;
 }
 
 export function divideMatchboard (arr, roundKey) {
@@ -18,7 +21,7 @@ export function divideMatchboard (arr, roundKey) {
                 gridSide: 'right',
                 round: roundKey
             }
-        });;
+        });
         return {
             leftSide,
             rightSide

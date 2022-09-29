@@ -17,6 +17,7 @@ function App() {
   const matchGrid = useMemo(() => getTournamentGridColumns(Object.keys(tournament ?? {}), tournament), [tournament])
 
   const submitForm = (e, teams) => {
+    console.log('teams arg for draw', teams)
     e.preventDefault();
     const draw = new Draw(teams)
     setDraw(draw)
