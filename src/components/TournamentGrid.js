@@ -1,8 +1,9 @@
+import { Grid, GridItem, HStack, VStack } from '@chakra-ui/react';
 import TournamentMatchup from './TournamentMatchup';
 
-const TournamentGrid = ({selectedWinners, roundKeys, dividedItems, selectWinner}) => {
+const TournamentGrid = ({selectedWinners, dividedItems, selectWinner}) => {
     const {leftCols, rightCols, middleCol} = dividedItems;
-
+    const colAmount = leftCols.length + rightCols.length + middleCol.length;
     const matchHasWinner = (matchId, roundKey) => {
       return selectedWinners[roundKey]?.some(winner => winner.matchId === matchId)
     }
@@ -12,9 +13,9 @@ const TournamentGrid = ({selectedWinners, roundKeys, dividedItems, selectWinner}
     }
 
     return(
-        <div className="draw-container">
+        <HStack templateColumns={`repeat(${colAmount}, 1fr)`} maxW="100%" columnGap={16}>
           {leftCols && leftCols.map((col, i) => 
-            <div className="grid-col grid-col-left" key={'tournament-left-'+i}>
+            <VStack className="col col-left">
               {col.map(match => 
                 <TournamentMatchup 
                   key={match.matchId} 
@@ -22,18 +23,18 @@ const TournamentGrid = ({selectedWinners, roundKeys, dividedItems, selectWinner}
                   selectWinner={selectWinner} 
                   matchHasWinner={matchHasWinner}/>
               )}
-            </div>
+            </VStack>
           )}
-          <div className="grid-col">
+          <VStack className="col col-middle">
             {middleCol.map(match => 
               <TournamentMatchup 
                 key={match.matchId} 
                 match={match} 
                 selectWinner={selectWinner} 
                 matchHasWinner={matchHasWinner} />)}
-          </div>
+          </VStack>
           {rightCols && reverseArray(rightCols).map((col, i) => 
-            <div className="grid-col grid-col-right" key={'tournament-right-'+i}>
+            <VStack className="col col-right">
               {col.map(match => 
                 <TournamentMatchup 
                   key={match.matchId} 
@@ -41,9 +42,9 @@ const TournamentGrid = ({selectedWinners, roundKeys, dividedItems, selectWinner}
                   selectWinner={selectWinner} 
                   matchHasWinner={matchHasWinner}/>
               )}
-            </div>
+            </VStack>
           )}
-        </div>
+        </HStack>
     )
 }
 

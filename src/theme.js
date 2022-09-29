@@ -11,7 +11,11 @@ const theme = extendTheme({
       },
       shadows: {
         white: '0 0 0 3px white'
-      }
-    }
+      },
+    },
+    fonts: {
+      heading: `'Trebuchet MS', sans-serif`,
+      body: `'Raleway', sans-serif`,
+    },
 });
 export default theme;

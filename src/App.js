@@ -7,7 +7,6 @@ import { getTournamentGridColumns } from './lib/helpers';
 import { Container, Flex, Heading } from '@chakra-ui/react';
 
 function App() {
-  const [totalRoundAmount, setTotalRoundAmount] = useState(0);
   const [draw, setDraw] = useState(null)
   const [drawCompleted, setDrawCompleted] = useState(false)
   const [selectedWinners, setSelectedWinners] = useState({
@@ -22,7 +21,6 @@ function App() {
     const draw = new Draw(teams)
     setDraw(draw)
     setTournament(draw.generateTournament());
-    setTotalRoundAmount(draw.totalRoundsLeft)
     setDrawCompleted(true)
   }
 
@@ -97,10 +95,9 @@ function App() {
   // }
 
   return (
-    <Container maxW="container.xl" py={32}>
-      <Flex direction="column">
-        <Heading>Matchboard</Heading>
-        {drawCompleted && <Heading>Total rounds: {totalRoundAmount}</Heading>}
+    <Container maxW="container.lg" py={[16, 32]}>
+      <Flex direction="column" alignItems={'center'}>
+        <Heading textAlign="center">Matchboard</Heading>
         {!drawCompleted && <TournamentForm onSubmit={submitForm} onError={() => setDrawCompleted(false)}/>}
 
         {drawCompleted && 
