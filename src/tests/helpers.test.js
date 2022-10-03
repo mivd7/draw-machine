@@ -41,24 +41,49 @@ const dummyTournament = draw.generateTournament();
 const tournamentKeys = Object.keys(dummyTournament);
 
 describe('hasDuplicates', () => {
+    const arrWithDuplicates = ['a', 'b', 'c', 'c', 'd', 'e'];
+    const arrWODuplicates = ['a','b','c','d','e','f','g'];
     it('returns true when supplied an array with duplicates', () => {
-        const arrWithDuplicates = ['a', 'b', 'c', 'c', 'd', 'e'];
         expect(hasDuplicates(arrWithDuplicates)).toBe(true)
     })
 
     it('returns false when supplied an array without duplicates', () => {
-        const arrWODuplicates = ['a','b','c','d','e']
         expect(hasDuplicates(arrWODuplicates)).toBe(false)
     })
 
     it('handles undefined input', () => {
-       expect(hasDuplicates(undefined)).toBe(undefined);
+       expect(hasDuplicates(undefined)).toBeUndefined()
+    })
+
+})
+
+describe('divideMatchboard', () => {
+    it('divides a given matchboard array into two equal parts', () => {
+        const tournamentKey = tournamentKeys[0];
+        const result = divideMatchboard(dummyTournament[tournamentKey].matchboard, tournamentKey);
+        expect(result.rightSide.length).toEqual(result.leftSide.length);
+    })
+
+    it('handles array with length 1', () => {
+        const finalTournamentKey = tournamentKeys[tournamentKeys.length - 1];
+        const result = divideMatchboard(dummyTournament[finalTournamentKey].matchboard, finalTournamentKey);
+        expect(result).toBeUndefined()
     })
 })
 
 describe('getTournamentGridColumns', () => {
-    const result = getTournamentGridColumns(tournamentKeys, dummyTournament);
-    it('utilises divideMatchboard func to divide matchboard', () => {
-        expect(divideMatchboard).toBeCalled();
+    let result = getTournamentGridColumns([...tournamentKeys], dummyTournament)
+    const { leftCols, rightCols, middleCol } = result;
+    it('returns an array of match arrays for leftCols', () => {
+        leftCols.forEach(col => expect(col).toBeInstanceOf(Array))
+    })
+
+    it('returns an array of match arrays for rightCols', () => {
+        rightCols.forEach(col => expect(col).toBeInstanceOf(Array))
+    })
+
+    it('returns an array of 1 match for the middle (final) col', () => {
+        expect(middleCol.length).toBe(1);
+        expect(middleCol[0]).toBeInstanceOf(Object)
     })
 })

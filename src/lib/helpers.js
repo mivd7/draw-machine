@@ -15,6 +15,7 @@ export function divideMatchboard (arr, roundKey) {
                 round: roundKey
             }
         });
+
         const rightSide = [...arr].splice(-middleIndex).map(match => {
             return {
                 ...match,
@@ -22,11 +23,13 @@ export function divideMatchboard (arr, roundKey) {
                 round: roundKey
             }
         });
+
         return {
             leftSide,
             rightSide
         }
     } 
+    return undefined;
 }
 
 export function getTournamentGridColumns(tournamentKeys, tournament) {
@@ -38,7 +41,6 @@ export function getTournamentGridColumns(tournamentKeys, tournament) {
             // middle column represents final round of tournament
             middleCol: tournament[lastRoundKey].matchboard
         };
-    
         tournamentKeys.forEach(key => {
             const divided = divideMatchboard(tournament[key].matchboard, key)
             if(divided) {
@@ -46,7 +48,7 @@ export function getTournamentGridColumns(tournamentKeys, tournament) {
                 result.rightCols.push(divided.rightSide)
             }
         })
-        // result.rightCols.reverse();
+
         return result;
     }
     return undefined
