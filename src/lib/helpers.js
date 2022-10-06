@@ -1,5 +1,5 @@
 export function hasDuplicates(array) {
-    if(array) {
+    if(array && Array.isArray(array)) {
         return (new Set(array)).size !== array.length;
     }
     return undefined;

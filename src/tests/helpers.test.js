@@ -54,11 +54,12 @@ describe('hasDuplicates', () => {
     it('returns false when supplied an array with length 1', () => {
         expect(hasDuplicates(['a'])).toBe(false)
     })
-
-    it('handles undefined input', () => {
-       expect(hasDuplicates(undefined)).toBeUndefined()
+    it('returns undefined for any input that is not an array', () => {
+        expect(hasDuplicates(1)).toBeUndefined()
+        expect(hasDuplicates(undefined)).toBeUndefined()
+        expect(hasDuplicates('a')).toBeUndefined()
+        expect(hasDuplicates(false)).toBeUndefined()
     })
-
 })
 
 describe('divideMatchboard', () => {
