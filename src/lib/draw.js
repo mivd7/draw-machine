@@ -2,6 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default class Draw {
   constructor(competitors) {
+    if(!competitors || competitors.length === 0) {
+      throw new Error('No competitors supplied')
+    }
     if(competitors.length !== 2) {
       this.matchboard = [];
       this.teams = [...competitors]
@@ -16,7 +19,6 @@ export default class Draw {
     } else {
       this.setFinal(competitors)
     }
-    
   }
 
   setFinal(competitors) {

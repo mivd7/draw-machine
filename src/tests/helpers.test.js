@@ -51,6 +51,10 @@ describe('hasDuplicates', () => {
         expect(hasDuplicates(arrWODuplicates)).toBe(false)
     })
 
+    it('returns false when supplied an array with length 1', () => {
+        expect(hasDuplicates(['a'])).toBe(false)
+    })
+
     it('handles undefined input', () => {
        expect(hasDuplicates(undefined)).toBeUndefined()
     })
@@ -76,7 +80,7 @@ describe('getTournamentGridColumns', () => {
     const { leftCols, rightCols, middleCol } = result;
     it('returns an array of match arrays for leftCols', () => {
         leftCols.forEach(col => expect(col).toBeInstanceOf(Array))
-    })
+    });
 
     it('returns an array of match arrays for rightCols', () => {
         rightCols.forEach(col => expect(col).toBeInstanceOf(Array))
